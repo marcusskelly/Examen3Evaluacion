@@ -1,0 +1,104 @@
+import org.sqlite.SQLiteDataSource;
+
+import javax.xml.transform.Result;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Scanner;
+
+public class BBDD {
+
+    public static void conectar(String bbdd) {
+
+
+        String url = "jdbc:sqlite:C:\\Users\\admin1\\IdeaProjects\\Examen3Evaluacion\\" + bbdd;
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl(url);
+
+        try (Connection con = dataSource.getConnection()) {
+            if (con.isValid(5)) {
+                System.out.printf("Conexión establecida");
+            }
+
+            crearTablaLibros(con);
+
+            cargarCatalogo(con,"catalogo.csv");
+
+        } catch (SQLException throwables) {
+            System.out.println("Excepción al establecer la conexión" + throwables.getSQLState());
+        }
+
+    }
+
+    public static void crearTablaLibros(Connection con) {
+
+
+        String crearTabla = "CREATE TABLE IF NOT EXISTS Libros (Isbn NVARCHAR PRIMARY KEY NOT NULL, Autor NVARCHAR(100) NOT NULL, Titulo NVARCHAR(100) NOT NULL, Editorial NVARCHAR(100) NOT NULL, AnioPublicacion INT NOT NULL, NumPaginas INT NOT NULL,Precio DEC(5,2) NOT NULL);";
+
+
+        try (Statement st = con.createStatement()) {
+            st.executeUpdate(crearTabla);
+
+
+        } catch (SQLException throwables) {
+            System.out.println("Excepción SQL: " + throwables.getMessage());
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void cargarCatalogo(Connection con, String fichero) {
+
+
+
+        try (FileReader fr = new FileReader(fichero)) {
+            try (BufferedReader br = new BufferedReader(fr)) {
+                String línea = br.readLine();
+                String[] registro;
+
+                while (línea != null) {
+                    registro = línea.split(";");
+
+                    /*
+                    for (int i = 0; i < registro.length; i++) {
+                        System.out.print(registro[i] + " ");
+                    }
+
+*/
+
+
+
+                    String insert = "INSERT INTO Libros(Isbn, Autor, Titulo, Editorial, AnioPublicacion,NumPaginas,Precio) VALUES ('" + registro[0] + "', '" + registro[1];
+                    //  + "', '" + registro[2] + "', '" + registro[3] + "', " + Integer.parseInt(registro[4]) + ", " +  Integer.parseInt(registro[5]) + ", " + Double.parseDouble(registro[6]) + ");";
+                    System.out.println(insert);
+                    /*
+                    try (Statement st = con.createStatement()) {
+                        int num = st.executeUpdate(insert);
+                        System.out.println("Se han insertado " + num + " registros.");
+                    } catch (SQLException throwables) {
+                        System.out.println("Excepción SQL: " + throwables.getMessage());
+                        throwables.printStackTrace();
+                    }
+                    */
+
+
+                    línea = br.readLine();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Excepción ruta incorrecta: " + e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Excepción E/S: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
