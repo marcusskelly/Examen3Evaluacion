@@ -91,9 +91,7 @@ public class Libro {
                 ", precio=" + precio +
                 '}';
     }
-    /*
 
-    de esta manera no podia crear libros
 
     public static Libro crearLibro(){
         Scanner sc = new Scanner(System.in);
@@ -110,12 +108,11 @@ public class Libro {
         System.out.println("Introduce un numero de paginas");
         int numPaginas = sc.nextInt();
         System.out.println("Introduce un precio");
-        int precio = sc.nextInt();
+        double precio = sc.nextDouble();
         Libro libro1 = new Libro(isbn,autor,titulo,editorial,anioPublicacion,numPaginas,precio);
-
         return libro1;
     }
-*/
+
 
     public static Libro crearLibro(String isbn, String autor, String titulo, String editorial, int anioPublicacion, int numPaginas, double precio) {
 
@@ -130,7 +127,7 @@ public class Libro {
         fichero.mkdirs();
 
 
-        System.out.println(Arrays.toString(campos));
+
         File fichero2 = new File("Editoriales" + "\\" + campos[2] + libro.getEditorial() + "\\" + libro.getIsbn() + ".txt");
        /*
         try {
@@ -154,37 +151,20 @@ public class Libro {
             System.out.println("Excepción al escribir en el  fichero: " + e.getMessage());
         }
 
-        String ruta2 = "C:\\Users\\Estela\\IdeaProjects\\Examen3Evaluacion\\catalago.csv";
+        String ruta2 = "C:\\Users\\admin1\\IdeaProjects\\Examen3Evaluacion\\catalogo.csv";
 
-        try (FileReader fr = new FileReader(fichero2)) {
-
-
-            try (BufferedReader br = new BufferedReader(fr)) {
-                String línea = br.readLine();
-                String[] campos2;
-                while (línea != null) {
-                    campos2 = línea.split(":");
-                    System.out.println(línea);
-                    System.out.println(Arrays.toString(campos2));
-                    
 
                     try (FileWriter fw1 = new FileWriter(ruta2, true)) {
-                        try (BufferedWriter bw = new BufferedWriter(fw1)) {
-                            bw.write(campos2[1] + ";");
-                            //[Ljava.lang.String;@1540e19d. Si le pongo campos2, me sale esto
-                            // si le pongo campos[1] me sale excepcion indexoutofbounds
-                            // si le pongo campos[0] me rellena catalogo con ISBN, Editorial, etc pero solo el titulo.
 
-                        }
+                        fw1.write("\n"  + libro.getIsbn() + ";" +libro.getAutor() + ";" +libro.getTitulo() + ";" +libro.getEditorial() + ";" +libro.getAnioPublicacion() + ";" + libro.getNumPaginas() + ";" + libro.getPrecio());
+
+                        } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    línea = br.readLine();
-                }
 
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
+
+
+
 }
